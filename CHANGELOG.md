@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Encoders are now cached in a module-level map keyed by model or encoding instead of being created and freed on every `fitMessages()` call.
-- Requires `@jeremysnr/snug` ^0.2.0.
+- Accepts `@jeremysnr/snug` 0.1.x or 0.2.x (`>=0.1.0 <0.3.0`). Nothing here needs the 0.2.0 additions yet.
 - Documentation corrected: with no `model` the `cl100k_base` encoding is used (the README previously said the default was `gpt-4o`); `gpt-4o` and newer use `o200k_base`, so pass the model you will call. The four-token per-message overhead is documented as a cookbook heuristic rather than an exact figure.
 
 ## [0.1.1] - 2026-04-06
