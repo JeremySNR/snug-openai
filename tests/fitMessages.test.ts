@@ -1,10 +1,19 @@
-import { fitMessages } from '../src/index.js';
+import { fitMessages, freeEncoders } from '../src/index.js';
 import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 const msgs = (roles: Array<[string, string]>): ChatCompletionMessageParam[] =>
   roles.map(([role, content]) => ({ role, content } as ChatCompletionMessageParam));
 
 describe('fitMessages (openai)', () => {
+  test('freeEncoders releases the cache and fitMessages still works afterwards', () => {
+    const messages = msgs([['user', 'hello']]);
+    const before = fitMessages(messages, { budget: 100, model: 'gpt-4o' });
+    expect(() => freeEncoders()).not.toThrow();
+    expect(() => freeEncoders()).not.toThrow();
+    const after = fitMessages(messages, { budget: 100, model: 'gpt-4o' });
+    expect(after.tokensUsed).toBe(before.tokensUsed);
+  });
+
   test('returns all messages when they fit', () => {
     const messages = msgs([['system', 'You are helpful.'], ['user', 'Hi'], ['assistant', 'Hello!']]);
     const result = fitMessages(messages, { budget: 200 });

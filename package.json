@@ -1,6 +1,6 @@
 {
   "name": "@jeremysnr/snug-openai",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "snug for the OpenAI SDK. Fit chat messages into a token budget, ready to pass to client.chat.completions.create.",
   "keywords": [
     "llm",
@@ -11,11 +11,19 @@
   ],
   "license": "MIT",
   "author": "Jeremy Smith",
+  "homepage": "https://github.com/JeremySNR/snug-openai#readme",
+  "bugs": {
+    "url": "https://github.com/JeremySNR/snug-openai/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JeremySNR/snug-openai.git"
   },
   "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -36,7 +44,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@jeremysnr/snug": "^0.1.0",
+    "@jeremysnr/snug": ">=0.1.0 <0.3.0",
     "tiktoken": "^1.0.22"
   },
   "peerDependencies": {

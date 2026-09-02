@@ -17,7 +17,7 @@ const { messages } = fitMessages(conversationHistory, {
 const response = await client.chat.completions.create({ model: 'gpt-4o', messages });
 ```
 
-System messages are always kept. Other messages are prioritised by recency — older messages are dropped first when the budget is tight.
+System messages are always kept. Other messages are prioritised by recency, so older messages are dropped first when the budget is tight.
 
 ## Install
 
@@ -33,9 +33,9 @@ npm install @jeremysnr/snug-openai
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `budget` | `number` | — | Token limit |
+| `budget` | `number` | (required) | Token limit |
 | `reserve` | `number` | `0` | Tokens to hold back for the model's reply |
-| `model` | `TiktokenModel` | `'gpt-4o'` | Used to select the tiktoken encoding |
+| `model` | `TiktokenModel` | `cl100k_base` encoding | Selects the tiktoken encoding. `gpt-4o` and newer use `o200k_base`, so pass the model you will call. |
 
 **Returns**
 
@@ -48,11 +48,19 @@ npm install @jeremysnr/snug-openai
 }
 ```
 
+### `freeEncoders()`
+
+tiktoken encoders are WASM objects and are slow to construct, so this package caches one per model and keeps it for the life of the process. Call `freeEncoders()` to release that memory; the next `fitMessages()` recreates encoders as needed.
+
+## How counts are made
+
+Each message is counted as the tiktoken length of its text content plus four tokens for OpenAI's per-message role and delimiter framing. That is the figure from OpenAI's cookbook and is close enough for budgeting, but the exact overhead varies slightly by model, and non-text content (images, tool call arguments) is not counted. Keep a `reserve` that covers the difference.
+
 ## Part of the snug ecosystem
 
-- [`@jeremysnr/snug`](https://github.com/JeremySNR/snug) — zero-dependency core primitive
-- [`@jeremysnr/snug-tiktoken`](https://github.com/JeremySNR/snug-tiktoken) — snug with tiktoken, model-agnostic
-- [`@jeremysnr/snug-anthropic`](https://github.com/JeremySNR/snug-anthropic) — snug for the Anthropic SDK
+- [`@jeremysnr/snug`](https://github.com/JeremySNR/snug), zero-dependency core primitive
+- [`@jeremysnr/snug-tiktoken`](https://github.com/JeremySNR/snug-tiktoken), snug with tiktoken for OpenAI encodings
+- [`@jeremysnr/snug-anthropic`](https://github.com/JeremySNR/snug-anthropic), snug for the Anthropic SDK
 
 ## Licence
 
